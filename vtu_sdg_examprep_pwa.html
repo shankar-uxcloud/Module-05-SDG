@@ -1,0 +1,2135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VTU StudyAI — SDG Exam Prep</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --surface: #1e2d45;
+    --surface2: #243350;
+    --border: rgba(99,179,237,0.15);
+    --border2: rgba(99,179,237,0.28);
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --pink: #ec4899;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --radius: 12px;
+    --radius2: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+
+  .app { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .logo-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 0;
+    color: var(--text2);
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(59,130,246,0.15), transparent);
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+  }
+
+  .nav-icon { font-size: 16px; min-width: 20px; text-align: center; }
+
+  .online-badge {
+    margin: 16px 20px 0;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.25);
+    color: var(--green);
+  }
+
+  .online-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .xp-bar-wrap {
+    margin: 16px 20px 0;
+    padding: 12px;
+    background: var(--bg3);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .xp-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .xp-bar { height: 5px; background: var(--bg2); border-radius: 99px; overflow: hidden; }
+  .xp-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 99px; width: 68%; transition: width 0.5s ease; }
+
+  .streak { display: flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 12px; color: var(--gold); font-weight: 600; }
+
+  /* MAIN */
+  .main { margin-left: 220px; flex: 1; padding: 24px; }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    background: var(--bg2);
+    padding: 14px 20px;
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+  }
+
+  .topbar-title { font-size: 20px; font-weight: 800; font-family: 'Syne', sans-serif; }
+  .topbar-title span { color: var(--accent2); }
+
+  .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text);
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn:hover { background: var(--surface2); transform: translateY(-1px); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-color: transparent;
+    color: white;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-gold { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); color: var(--gold); }
+  .btn-green { background: rgba(16,185,129,0.15); border-color: rgba(16,185,129,0.3); color: var(--green); }
+  .btn-purple { background: rgba(139,92,246,0.15); border-color: rgba(139,92,246,0.3); color: var(--purple); }
+  .btn-red { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: var(--red); }
+
+  /* VIEWS */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* DASHBOARD */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--border2); }
+
+  .stat-icon { font-size: 22px; margin-bottom: 10px; display: block; }
+  .stat-num { font-size: 28px; font-weight: 800; font-family: 'Syne', sans-serif; }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .stat-card .glow { position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; border-radius: 50%; opacity: 0.08; }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .card-title { font-size: 14px; font-weight: 700; font-family: 'Syne', sans-serif; margin-bottom: 14px; color: var(--text2); letter-spacing: 0.05em; text-transform: uppercase; font-size: 11px; }
+
+  .module-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .module-item:hover { color: var(--accent2); }
+  .module-item:last-child { border-bottom: none; }
+
+  .module-num {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .module-info { flex: 1; }
+  .module-name { font-size: 13px; font-weight: 500; }
+  .module-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  .progress-mini { height: 3px; background: var(--bg3); border-radius: 99px; margin-top: 5px; }
+  .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+
+  .offline-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.2);
+    color: var(--green);
+    padding: 3px 8px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  /* AI GENERATOR */
+  .generator-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .generator-panel {
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    padding: 22px;
+    height: fit-content;
+  }
+
+  .panel-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; font-family: 'Syne', sans-serif; }
+
+  .upload-zone {
+    border: 2px dashed var(--border2);
+    border-radius: var(--radius);
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg3);
+    margin-bottom: 16px;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.05);
+  }
+
+  .upload-icon { font-size: 32px; margin-bottom: 10px; }
+  .upload-text { font-size: 13px; color: var(--text2); }
+  .upload-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  .mark-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+
+  .mark-tab {
+    flex: 1;
+    padding: 8px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text2);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .mark-tab.active {
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.2));
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+
+  .answer-output {
+    background: var(--bg3);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    min-height: 300px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+    overflow-y: auto;
+    max-height: 500px;
+  }
+
+  .answer-output .placeholder { color: var(--text3); font-style: italic; }
+
+  .typing { display: inline-block; }
+  .typing-cursor { animation: blink 1s infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* QUIZ */
+  .quiz-layout { max-width: 700px; margin: 0 auto; }
+
+  .quiz-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .quiz-dots { display: flex; gap: 4px; flex: 1; }
+  .quiz-dot { flex: 1; height: 4px; border-radius: 99px; background: var(--bg3); transition: background 0.3s; }
+  .quiz-dot.done { background: var(--green); }
+  .quiz-dot.current { background: var(--accent); }
+
+  .question-card {
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+
+  .q-meta { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; }
+  .q-badge { padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+  .q-badge.m2 { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+  .q-badge.m5 { background: rgba(59,130,246,0.15); color: var(--accent); border: 1px solid rgba(59,130,246,0.25); }
+  .q-badge.m10 { background: rgba(245,158,11,0.15); color: var(--gold); border: 1px solid rgba(245,158,11,0.25); }
+
+  .q-text { font-size: 15px; font-weight: 500; line-height: 1.6; margin-bottom: 20px; }
+
+  .options-grid { display: flex; flex-direction: column; gap: 10px; }
+
+  .option {
+    padding: 13px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    cursor: pointer;
+    font-size: 13.5px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .option:hover { border-color: var(--accent); background: rgba(59,130,246,0.05); }
+  .option.correct { border-color: var(--green); background: rgba(16,185,129,0.1); color: var(--green); }
+  .option.wrong { border-color: var(--red); background: rgba(239,68,68,0.1); color: var(--red); }
+  .option.selected { border-color: var(--accent); background: rgba(59,130,246,0.1); }
+
+  .option-letter {
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--text2);
+    flex-shrink: 0;
+  }
+
+  /* FLASHCARDS */
+  .flashcard-wrap { max-width: 600px; margin: 0 auto; }
+
+  .flashcard {
+    perspective: 1200px;
+    height: 280px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+  .flashcard-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: var(--radius2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .flashcard-front {
+    background: linear-gradient(135deg, var(--bg2), var(--surface));
+    border: 1px solid var(--border);
+  }
+
+  .flashcard-back {
+    background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(6,182,212,0.1));
+    border: 1px solid var(--accent);
+    transform: rotateY(180deg);
+  }
+
+  .card-label { font-size: 11px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; font-weight: 700; }
+  .card-q { font-size: 16px; font-weight: 600; line-height: 1.5; }
+  .card-a { font-size: 13.5px; line-height: 1.7; color: var(--text2); }
+
+  .card-controls { display: flex; gap: 12px; justify-content: center; }
+
+  /* ANSWER TRAINER */
+  .trainer-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .trainer-panel {
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    padding: 22px;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    resize: none;
+    outline: none;
+    line-height: 1.7;
+    transition: border-color 0.15s;
+  }
+
+  textarea:focus { border-color: var(--accent); }
+
+  .score-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    gap: 12px;
+  }
+
+  .score-circle {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 4px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 800;
+    font-family: 'Syne', sans-serif;
+    color: var(--green);
+    background: rgba(16,185,129,0.1);
+  }
+
+  .score-breakdown { width: 100%; }
+  .score-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; color: var(--text2); }
+  .score-bar { flex: 1; height: 5px; background: var(--bg3); border-radius: 99px; }
+  .score-bar-fill { height: 100%; border-radius: 99px; background: var(--green); }
+
+  /* OFFLINE SURVIVAL */
+  .survival-hero {
+    background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(245,158,11,0.1));
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: var(--radius2);
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .survival-icon { font-size: 48px; margin-bottom: 12px; }
+  .survival-title { font-size: 24px; font-weight: 800; color: var(--gold); font-family: 'Syne', sans-serif; margin-bottom: 8px; }
+  .survival-sub { color: var(--text2); font-size: 14px; }
+
+  .survival-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  .survival-card {
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .survival-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+
+  .survival-card-icon { font-size: 28px; margin-bottom: 10px; }
+  .survival-card-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; font-family: 'Syne', sans-serif; }
+  .survival-card-sub { font-size: 11px; color: var(--text3); }
+
+  /* GAMIFICATION */
+  .level-banner {
+    background: linear-gradient(135deg, rgba(245,158,11,0.2), rgba(239,68,68,0.1));
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: var(--radius2);
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .level-badge {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+    box-shadow: 0 0 30px rgba(245,158,11,0.3);
+  }
+
+  .level-info h2 { font-size: 18px; font-weight: 800; font-family: 'Syne', sans-serif; }
+  .level-info p { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .level-xp { margin-top: 10px; }
+  .level-xp-bar { height: 6px; background: var(--bg3); border-radius: 99px; margin-top: 6px; }
+  .level-xp-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #f97316); border-radius: 99px; width: 68%; }
+
+  .achievements-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+
+  .achievement {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .achievement.unlocked { border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.05); }
+  .achievement:hover { transform: translateY(-2px); }
+  .achievement-icon { font-size: 24px; margin-bottom: 6px; filter: grayscale(0.7); }
+  .achievement.unlocked .achievement-icon { filter: none; }
+  .achievement-name { font-size: 11px; font-weight: 700; color: var(--text2); }
+  .achievement.unlocked .achievement-name { color: var(--gold); }
+
+  /* LAST DAY MODE */
+  .lastday-banner {
+    background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(245,158,11,0.15));
+    border: 2px solid rgba(239,68,68,0.4);
+    border-radius: var(--radius2);
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    animation: urgentPulse 3s infinite;
+  }
+
+  @keyframes urgentPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+    50% { box-shadow: 0 0 30px rgba(239,68,68,0.2); }
+  }
+
+  .timer-display {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--red);
+    font-family: 'Syne', sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .important-q-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .important-q {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .important-q:hover { border-color: var(--red); background: rgba(239,68,68,0.05); }
+
+  .hot-badge {
+    background: rgba(239,68,68,0.2);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: var(--red);
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* DOWNLOAD MODULE */
+  .download-card {
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+  }
+
+  .download-card:hover { border-color: var(--accent); }
+
+  .download-icon-wrap {
+    width: 48px; height: 48px;
+    border-radius: var(--radius);
+    background: rgba(59,130,246,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .download-info { flex: 1; }
+  .download-name { font-size: 14px; font-weight: 600; }
+  .download-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .progress-ring { position: relative; display: inline-flex; }
+
+  /* AI CHAT */
+  .chat-layout {
+    display: flex;
+    flex-direction: column;
+    height: 550px;
+    background: var(--bg2);
+    border-radius: var(--radius2);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg3);
+  }
+
+  .ai-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .message {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .message.user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .message.user .msg-avatar { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+
+  .msg-bubble {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    line-height: 1.6;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+  }
+
+  .message.user .msg-bubble {
+    background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(6,182,212,0.15));
+    border-color: var(--accent);
+  }
+
+  .chat-input-row {
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    background: var(--bg3);
+  }
+
+  .chat-input {
+    flex: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    resize: none;
+    height: 40px;
+  }
+
+  .chat-input:focus { border-color: var(--accent); }
+
+  .send-btn {
+    width: 40px; height: 40px;
+    border-radius: var(--radius);
+    background: var(--accent);
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.15s;
+  }
+
+  .send-btn:hover { opacity: 0.85; }
+
+  /* NOTIFICATION TOAST */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .toast.xp { border-color: rgba(245,158,11,0.4); color: var(--gold); }
+  .toast.success { border-color: rgba(16,185,129,0.4); color: var(--green); }
+
+  @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes fadeOut { to { opacity: 0; transform: translateX(100px); } }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 99px; }
+
+  select {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    width: 100%;
+    margin-bottom: 12px;
+    cursor: pointer;
+  }
+
+  .section-title { font-size: 18px; font-weight: 800; font-family: 'Syne', sans-serif; margin-bottom: 16px; }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  .tag { padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 700; }
+  .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent); }
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--green); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .content-grid { grid-template-columns: 1fr; }
+    .generator-layout { grid-template-columns: 1fr; }
+    .trainer-layout { grid-template-columns: 1fr; }
+    .survival-grid { grid-template-columns: repeat(2, 1fr); }
+    .achievements-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="logo">
+      <div class="logo-title">⚡ VTU StudyAI</div>
+      <div class="logo-sub">SDG Exam Preparation Platform</div>
+    </div>
+
+    <div onclick="showView('dashboard')" class="nav-item active" id="nav-dashboard">
+      <span class="nav-icon">🏠</span> Dashboard
+    </div>
+    <div onclick="showView('generator')" class="nav-item" id="nav-generator">
+      <span class="nav-icon">🤖</span> AI Answer Gen
+    </div>
+    <div onclick="showView('quiz')" class="nav-item" id="nav-quiz">
+      <span class="nav-icon">🎯</span> Quiz Mode
+    </div>
+    <div onclick="showView('flashcards')" class="nav-item" id="nav-flashcards">
+      <span class="nav-icon">🧠</span> Flashcards
+    </div>
+    <div onclick="showView('trainer')" class="nav-item" id="nav-trainer">
+      <span class="nav-icon">✍️</span> Answer Trainer
+    </div>
+    <div onclick="showView('lastday')" class="nav-item" id="nav-lastday">
+      <span class="nav-icon">🔥</span> Last Day Mode
+    </div>
+    <div onclick="showView('survival')" class="nav-item" id="nav-survival">
+      <span class="nav-icon">📵</span> Offline Survival
+    </div>
+    <div onclick="showView('chat')" class="nav-item" id="nav-chat">
+      <span class="nav-icon">💬</span> AI Doubt Solver
+    </div>
+    <div onclick="showView('gamification')" class="nav-item" id="nav-gamification">
+      <span class="nav-icon">🏆</span> Achievements
+    </div>
+
+    <div class="online-badge">
+      <div class="online-dot"></div>
+      Online — AI Active
+    </div>
+
+    <div class="xp-bar-wrap">
+      <div class="xp-label">
+        <span>Level 7 — Scholar</span>
+        <span style="color:var(--accent)">1,360 XP</span>
+      </div>
+      <div class="xp-bar"><div class="xp-fill" id="sidebar-xp"></div></div>
+      <div class="streak">🔥 12 day streak</div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-title">Module 05 — <span>Sustainable Development Goals</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn-green" onclick="showDownloadToast()">⬇ Download for Offline</button>
+        <button class="btn btn-gold">🔥 Last Day Mode</button>
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;">👤</div>
+      </div>
+    </div>
+
+    <!-- ===== DASHBOARD VIEW ===== -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="glow" style="background:var(--accent)"></div>
+          <span class="stat-icon">📚</span>
+          <div class="stat-num" style="color:var(--accent)">10</div>
+          <div class="stat-label">Questions Covered</div>
+        </div>
+        <div class="stat-card">
+          <div class="glow" style="background:var(--green)"></div>
+          <span class="stat-icon">✅</span>
+          <div class="stat-num" style="color:var(--green)">76%</div>
+          <div class="stat-label">Module Completion</div>
+        </div>
+        <div class="stat-card">
+          <div class="glow" style="background:var(--gold)"></div>
+          <span class="stat-icon">⚡</span>
+          <div class="stat-num" style="color:var(--gold)">1,360</div>
+          <div class="stat-label">Total XP Earned</div>
+        </div>
+        <div class="stat-card">
+          <div class="glow" style="background:var(--purple)"></div>
+          <span class="stat-icon">🎯</span>
+          <div class="stat-num" style="color:var(--purple)">84%</div>
+          <div class="stat-label">Quiz Accuracy</div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="card">
+          <div class="card-title">📖 Module Topics</div>
+          <div class="module-item" onclick="quickLoad('SDGs Concept & 17 Goals')">
+            <div class="module-num">Q1</div>
+            <div class="module-info">
+              <div class="module-name">SDGs Concept & 17 Goals</div>
+              <div class="module-sub">Objectives & Significance</div>
+              <div class="progress-mini"><div class="progress-fill" style="width:100%"></div></div>
+            </div>
+            <span class="offline-pill">✓ Saved</span>
+          </div>
+          <div class="module-item" onclick="quickLoad('Goal-Based Development')">
+            <div class="module-num">Q2</div>
+            <div class="module-info">
+              <div class="module-name">Goal-Based Development</div>
+              <div class="module-sub">Features, Importance, Examples</div>
+              <div class="progress-mini"><div class="progress-fill" style="width:100%"></div></div>
+            </div>
+            <span class="offline-pill">✓ Saved</span>
+          </div>
+          <div class="module-item" onclick="quickLoad('Financing SDGs')">
+            <div class="module-num">Q3</div>
+            <div class="module-info">
+              <div class="module-name">Financing for SDGs</div>
+              <div class="module-sub">Sources & Challenges</div>
+              <div class="progress-mini"><div class="progress-fill" style="width:80%"></div></div>
+            </div>
+            <span class="offline-pill">✓ Saved</span>
+          </div>
+          <div class="module-item" onclick="quickLoad('Good Governance')">
+            <div class="module-num">Q4</div>
+            <div class="module-info">
+              <div class="module-name">Good Governance</div>
+              <div class="module-sub">Principles & Importance</div>
+              <div class="progress-mini"><div class="progress-fill" style="width:60%"></div></div>
+            </div>
+            <span class="offline-pill">✓ Saved</span>
+          </div>
+          <div class="module-item" onclick="quickLoad('Feasibility of SD')">
+            <div class="module-num">Q5</div>
+            <div class="module-info">
+              <div class="module-name">Feasibility of Sustainable Dev.</div>
+              <div class="module-sub">Economic, Social, Environmental</div>
+              <div class="progress-mini"><div class="progress-fill" style="width:40%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔥 Important Questions (Hot!)</div>
+          <div class="important-q" onclick="showView('generator')">
+            <span class="hot-badge">10M</span>
+            <span style="font-size:13px;flex:1">Explain 17 SDGs and their significance in global development</span>
+            <span style="font-size:11px;color:var(--text3)">★★★</span>
+          </div>
+          <div class="important-q" onclick="showView('generator')">
+            <span class="hot-badge">10M</span>
+            <span style="font-size:13px;flex:1">Discuss Financing for SDGs — sources and challenges</span>
+            <span style="font-size:11px;color:var(--text3)">★★★</span>
+          </div>
+          <div class="important-q" onclick="showView('generator')">
+            <span class="hot-badge">10M</span>
+            <span style="font-size:13px;flex:1">"Good Governance is essential for Sustainable Dev." Justify</span>
+            <span style="font-size:11px;color:var(--text3)">★★★</span>
+          </div>
+          <div class="important-q" onclick="showView('generator')">
+            <span style="background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.3);color:var(--accent);padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;">5M</span>
+            <span style="font-size:13px;flex:1">Features and importance of Goal-Based Development</span>
+            <span style="font-size:11px;color:var(--text3)">★★☆</span>
+          </div>
+          <div class="important-q" onclick="showView('generator')">
+            <span style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.25);color:var(--green);padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;">2M</span>
+            <span style="font-size:13px;flex:1">Define Sustainable Development. What are SDGs?</span>
+            <span style="font-size:11px;color:var(--text3)">★★☆</span>
+          </div>
+          <div style="margin-top:14px;padding:12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);">
+            <div style="font-size:12px;color:var(--text2);display:flex;gap:6px;align-items:center">
+              <span>📊</span>
+              <span>Based on last 5 years VTU question papers analysis</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚡ Quick Actions</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="showView('generator')">🤖 Generate VTU Answer</button>
+          <button class="btn btn-gold" onclick="showView('quiz')">🎯 Start Quiz</button>
+          <button class="btn btn-purple" onclick="showView('flashcards')">🧠 Flashcard Mode</button>
+          <button class="btn btn-green" onclick="showView('trainer')">✍️ Practice Writing</button>
+          <button class="btn btn-red" onclick="showView('lastday')">🔥 Last Day Mode</button>
+          <button class="btn" onclick="showView('survival')">📵 Offline Survival</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AI GENERATOR VIEW ===== -->
+    <div class="view" id="view-generator">
+      <div class="section-title">🤖 AI Answer Generator</div>
+      <div class="generator-layout">
+        <div class="generator-panel">
+          <div class="panel-title">📄 Input</div>
+
+          <div class="upload-zone" onclick="fakeUpload()">
+            <div class="upload-icon">📎</div>
+            <div class="upload-text">Drop PDF / DOCX or click to upload</div>
+            <div class="upload-hint" id="upload-status">Supports SDG notes, textbook chapters, any study material</div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">Or choose from saved content:</div>
+            <select id="topic-select">
+              <option value="">Select a topic...</option>
+              <option value="sdg17">Explain the Concept of SDGs and the 17 Goals</option>
+              <option value="goal-based">Goal-Based Development — Features & Importance</option>
+              <option value="financing">Financing for Sustainable Development</option>
+              <option value="governance">Good Governance — Principles & Importance</option>
+              <option value="feasibility">Feasibility of Sustainable Development</option>
+              <option value="roles">Role of Governments, Private Sector & Int'l Orgs</option>
+              <option value="justify-gov">Good Governance essential for SD — Justify</option>
+              <option value="challenges">Challenges in Achieving SDGs in Developing Countries</option>
+              <option value="financing-gov">Relationship between Financing, Governance & Feasibility</option>
+              <option value="2030agenda">2030 Agenda for Sustainable Development</option>
+            </select>
+          </div>
+
+          <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">Answer type:</div>
+          <div class="mark-tabs">
+            <div class="mark-tab active" id="tab-2" onclick="setMarkType(2)">2 Marks<br><span style="font-size:10px;opacity:0.7">Definition / Short</span></div>
+            <div class="mark-tab" id="tab-5" onclick="setMarkType(5)">5 Marks<br><span style="font-size:10px;opacity:0.7">Explanation</span></div>
+            <div class="mark-tab" id="tab-10" onclick="setMarkType(10)">10 Marks<br><span style="font-size:10px;opacity:0.7">Detailed Essay</span></div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;" onclick="generateAnswer()">
+            ✨ Generate VTU Answer
+          </button>
+
+          <div style="margin-top:12px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);font-size:11px;color:var(--text3);">
+            💡 Answers are structured in VTU format with proper headings, points & examples
+          </div>
+        </div>
+
+        <div class="generator-panel">
+          <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>📝 Generated Answer</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn" style="padding:5px 10px;font-size:11px;" onclick="copyAnswer()">📋 Copy</button>
+              <button class="btn btn-green" style="padding:5px 10px;font-size:11px;" onclick="saveAnswer()">💾 Save Offline</button>
+            </div>
+          </div>
+
+          <div class="answer-output" id="answer-output">
+            <div class="placeholder">Your VTU-formatted answer will appear here...<br><br>Select a topic and mark type, then click Generate.</div>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:8px;">
+            <div style="flex:1;padding:10px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:var(--accent)" id="word-count">—</div>
+              <div style="font-size:10px;color:var(--text3)">Words</div>
+            </div>
+            <div style="flex:1;padding:10px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:var(--green)" id="read-time">—</div>
+              <div style="font-size:10px;color:var(--text3)">Min read</div>
+            </div>
+            <div style="flex:1;padding:10px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);text-align:center;">
+              <div style="font-size:18px;font-weight:800;color:var(--gold)" id="marks-label">—</div>
+              <div style="font-size:10px;color:var(--text3)">Marks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== QUIZ VIEW ===== -->
+    <div class="view" id="view-quiz">
+      <div class="section-title">🎯 Quiz Mode — Module 05</div>
+      <div class="quiz-layout">
+        <div class="quiz-progress">
+          <span style="font-size:12px;color:var(--text3)">Q<span id="q-num">1</span>/8</span>
+          <div class="quiz-dots" id="quiz-dots"></div>
+          <span style="font-size:12px;color:var(--gold)">+10 XP each</span>
+        </div>
+
+        <div class="question-card" id="q-card">
+          <div class="q-meta">
+            <span class="q-badge m10" id="q-badge">10 Marks</span>
+            <span style="font-size:11px;color:var(--text3)" id="q-topic">Unit 5 – SDGs</span>
+          </div>
+          <div class="q-text" id="q-text">Loading question...</div>
+          <div class="options-grid" id="options-container"></div>
+        </div>
+
+        <div id="explanation-box" style="display:none;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius);padding:14px 16px;font-size:13px;line-height:1.6;color:var(--text2);margin-bottom:14px;"></div>
+
+        <div style="display:flex;gap:10px;">
+          <button class="btn" style="flex:1" onclick="skipQuestion()">⏭ Skip</button>
+          <button class="btn btn-primary" style="flex:2" id="next-btn" onclick="nextQuestion()" disabled>Next Question →</button>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;align-items:center;">
+          <div style="font-size:12px;color:var(--text3)">Score: <span id="score-display" style="color:var(--green);font-weight:700">0/0</span></div>
+          <div style="font-size:12px;color:var(--text3)">•</div>
+          <div style="font-size:12px;color:var(--text3)">Accuracy: <span id="accuracy-display" style="color:var(--accent);font-weight:700">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FLASHCARDS VIEW ===== -->
+    <div class="view" id="view-flashcards">
+      <div class="section-title">🧠 Flashcard Revision</div>
+      <div class="flashcard-wrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <span style="font-size:13px;color:var(--text3)">Card <span id="fc-num">1</span> of <span id="fc-total">12</span></span>
+          <div style="display:flex;gap:8px;">
+            <button class="btn" style="padding:5px 10px;font-size:11px;" onclick="shuffleCards()">🔀 Shuffle</button>
+            <button class="btn btn-purple" style="padding:5px 10px;font-size:11px;" onclick="showView('quiz')">→ Quiz Mode</button>
+          </div>
+        </div>
+
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-inner">
+            <div class="flashcard-face flashcard-front">
+              <div class="card-label">Question (click to reveal)</div>
+              <div class="card-q" id="fc-question">What are the Sustainable Development Goals (SDGs)?</div>
+            </div>
+            <div class="flashcard-face flashcard-back">
+              <div class="card-label">Answer</div>
+              <div class="card-a" id="fc-answer">The SDGs are 17 global goals adopted by the UN in September 2015 as part of the 2030 Agenda. They address poverty, hunger, health, education, climate change, and peace — to be achieved by 2030, replacing the earlier MDGs.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-controls">
+          <button class="btn btn-red" onclick="rateCard('hard')">😓 Hard</button>
+          <button class="btn" onclick="rateCard('ok')">😐 Okay</button>
+          <button class="btn btn-green" onclick="rateCard('easy')">😊 Easy</button>
+        </div>
+
+        <div style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;">
+          <div style="padding:12px;background:var(--bg2);border-radius:var(--radius);border:1px solid rgba(239,68,68,0.2);">
+            <div style="font-size:20px;font-weight:800;color:var(--red)" id="fc-hard">2</div>
+            <div style="font-size:11px;color:var(--text3)">Hard</div>
+          </div>
+          <div style="padding:12px;background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border);">
+            <div style="font-size:20px;font-weight:800;color:var(--text2)" id="fc-ok">5</div>
+            <div style="font-size:11px;color:var(--text3)">Okay</div>
+          </div>
+          <div style="padding:12px;background:var(--bg2);border-radius:var(--radius);border:1px solid rgba(16,185,129,0.2);">
+            <div style="font-size:20px;font-weight:800;color:var(--green)" id="fc-easy">5</div>
+            <div style="font-size:11px;color:var(--text3)">Easy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ANSWER TRAINER VIEW ===== -->
+    <div class="view" id="view-trainer">
+      <div class="section-title">✍️ Answer Writing Trainer</div>
+      <div class="trainer-layout">
+        <div class="trainer-panel">
+          <div class="panel-title">Your Answer</div>
+          <div style="padding:12px;background:rgba(59,130,246,0.07);border-radius:var(--radius);border:1px solid rgba(59,130,246,0.15);margin-bottom:12px;">
+            <div style="font-size:12px;color:var(--accent);font-weight:600;margin-bottom:4px;">Question (10 Marks):</div>
+            <div style="font-size:13px;line-height:1.6">"Good Governance is essential for Sustainable Development." Justify the statement with suitable examples.</div>
+          </div>
+          <textarea id="trainer-input" rows="12" placeholder="Write your answer here in VTU style...
+
+Tips:
+• Start with Introduction
+• Use numbered points
+• Add examples
+• End with Conclusion"></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+            <span id="word-counter" style="font-size:11px;color:var(--text3)">0 words</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn" onclick="clearTrainer()">Clear</button>
+              <button class="btn btn-primary" onclick="evaluateAnswer()">🤖 Evaluate with AI</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-panel">
+          <div class="panel-title">AI Evaluation</div>
+          <div id="eval-placeholder">
+            <div style="text-align:center;padding:40px 20px;color:var(--text3);">
+              <div style="font-size:40px;margin-bottom:12px">📊</div>
+              <div style="font-size:13px">Write your answer and click Evaluate to get AI feedback comparing your answer with the model answer.</div>
+            </div>
+          </div>
+
+          <div id="eval-result" style="display:none;">
+            <div class="score-display">
+              <div class="score-circle" id="score-circle">8/10</div>
+              <div style="font-size:13px;color:var(--text2);text-align:center">Very Good! A few improvements needed.</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="score-breakdown">
+              <div class="score-item">
+                <span style="min-width:100px">Introduction</span>
+                <div class="score-bar"><div class="score-bar-fill" style="width:90%"></div></div>
+                <span style="min-width:30px;text-align:right">9/10</span>
+              </div>
+              <div class="score-item">
+                <span style="min-width:100px">Key Points</span>
+                <div class="score-bar"><div class="score-bar-fill" style="width:80%"></div></div>
+                <span style="min-width:30px;text-align:right">8/10</span>
+              </div>
+              <div class="score-item">
+                <span style="min-width:100px">Examples</span>
+                <div class="score-bar"><div class="score-bar-fill" style="width:70%"></div></div>
+                <span style="min-width:30px;text-align:right">7/10</span>
+              </div>
+              <div class="score-item">
+                <span style="min-width:100px">Conclusion</span>
+                <div class="score-bar"><div class="score-bar-fill" style="width:85%"></div></div>
+                <span style="min-width:30px;text-align:right">8/10</span>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div style="background:var(--bg3);border-radius:var(--radius);padding:12px;font-size:12px;line-height:1.7;color:var(--text2);">
+              <strong style="color:var(--text)">💡 AI Feedback:</strong><br>
+              Good structure and relevant examples (Swachh Bharat, Digital India). Consider adding: transparency principle with e-tendering example, and mention equity/inclusiveness explicitly. Conclusion could link back to SDGs more strongly.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LAST DAY MODE VIEW ===== -->
+    <div class="view" id="view-lastday">
+      <div class="lastday-banner">
+        <div>
+          <div style="font-size:12px;color:var(--red);font-weight:700;margin-bottom:6px;">⚠️ EXAM COUNTDOWN</div>
+          <div class="timer-display" id="countdown-timer">08:42:15</div>
+        </div>
+        <div style="flex:1;margin-left:20px;">
+          <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:var(--gold)">🔥 Last Day Mode Active</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:4px;">Focus on high-probability questions only. No distractions.</div>
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn btn-red" style="font-size:12px;padding:6px 12px;">🎯 Start Power Hour</button>
+            <button class="btn" style="font-size:12px;padding:6px 12px;">📊 Set Exam Time</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div class="card">
+          <div class="card-title">🔥 Must Revise (Very Hot)</div>
+          <div class="important-q-list">
+            <div class="important-q">
+              <span class="hot-badge">10M</span>
+              <span style="font-size:13px;flex:1">Explain 17 SDGs and significance</span>
+            </div>
+            <div class="important-q">
+              <span class="hot-badge">10M</span>
+              <span style="font-size:13px;flex:1">Good Governance & Sustainable Dev</span>
+            </div>
+            <div class="important-q">
+              <span class="hot-badge">10M</span>
+              <span style="font-size:13px;flex:1">Financing for SDGs — sources & challenges</span>
+            </div>
+            <div class="important-q">
+              <span class="hot-badge">5M</span>
+              <span style="font-size:13px;flex:1">Feasibility factors of SD</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">⚡ Rapid Fire — Key Facts</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+            <div style="padding:8px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--accent)">SDGs adopted: <strong>September 2015</strong></div>
+            <div style="padding:8px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--green)">Number of goals: <strong>17 goals, 169 targets</strong></div>
+            <div style="padding:8px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--gold)">Deadline: <strong>2030 Agenda</strong></div>
+            <div style="padding:8px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--purple)">Replaced: <strong>MDGs (Millennium Dev Goals)</strong></div>
+            <div style="padding:8px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--pink)">Principle: <strong>"Leave No One Behind"</strong></div>
+            <div style="padding:8px 12px;background:var(--bg3);border-radius:8px;border-left:3px solid var(--red)">SDGs came into effect: <strong>1 January 2016</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📝 Saved Answers (Offline Available)</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg3);border-radius:var(--radius);">
+            <span>📄</span>
+            <span style="flex:1;font-size:13px">SDGs Concept & 17 Goals — 10M Answer</span>
+            <span class="offline-pill">✓ Offline</span>
+            <button class="btn" style="padding:4px 10px;font-size:11px;" onclick="loadSavedAnswer()">View</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg3);border-radius:var(--radius);">
+            <span>📄</span>
+            <span style="flex:1;font-size:13px">Good Governance Principles — 10M Answer</span>
+            <span class="offline-pill">✓ Offline</span>
+            <button class="btn" style="padding:4px 10px;font-size:11px;">View</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--bg3);border-radius:var(--radius);">
+            <span>📄</span>
+            <span style="flex:1;font-size:13px">Financing for SDGs — 10M Answer</span>
+            <span class="offline-pill">✓ Offline</span>
+            <button class="btn" style="padding:4px 10px;font-size:11px;">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== OFFLINE SURVIVAL MODE ===== -->
+    <div class="view" id="view-survival">
+      <div class="survival-hero">
+        <div class="survival-icon">📵</div>
+        <div class="survival-title">Offline Survival Mode</div>
+        <div class="survival-sub">Everything you need — zero internet required.<br>Works during travel, power cuts, and exam halls.</div>
+      </div>
+
+      <div class="survival-grid">
+        <div class="survival-card">
+          <div class="survival-card-icon">📚</div>
+          <div class="survival-card-title">Saved Answers</div>
+          <div class="survival-card-sub">14 answers saved locally</div>
+          <div style="margin-top:10px">
+            <span class="offline-pill">✓ Available Offline</span>
+          </div>
+        </div>
+        <div class="survival-card">
+          <div class="survival-card-icon">🧠</div>
+          <div class="survival-card-title">Flashcards</div>
+          <div class="survival-card-sub">42 cards preloaded</div>
+          <div style="margin-top:10px">
+            <span class="offline-pill">✓ Available Offline</span>
+          </div>
+        </div>
+        <div class="survival-card">
+          <div class="survival-card-icon">🎯</div>
+          <div class="survival-card-title">Practice Quiz</div>
+          <div class="survival-card-sub">30 questions cached</div>
+          <div style="margin-top:10px">
+            <span class="offline-pill">✓ Available Offline</span>
+          </div>
+        </div>
+        <div class="survival-card">
+          <div class="survival-card-icon">📊</div>
+          <div class="survival-card-title">Progress Data</div>
+          <div class="survival-card-sub">Stored in IndexedDB</div>
+          <div style="margin-top:10px">
+            <span class="offline-pill">✓ Available Offline</span>
+          </div>
+        </div>
+        <div class="survival-card">
+          <div class="survival-card-icon">⚡</div>
+          <div class="survival-card-title">Key Facts</div>
+          <div class="survival-card-sub">Important dates & numbers</div>
+          <div style="margin-top:10px">
+            <span class="offline-pill">✓ Available Offline</span>
+          </div>
+        </div>
+        <div class="survival-card" style="opacity:0.5;cursor:not-allowed;">
+          <div class="survival-card-icon">🤖</div>
+          <div class="survival-card-title">AI Answer Gen</div>
+          <div class="survival-card-sub">Requires internet</div>
+          <div style="margin-top:10px;">
+            <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);color:var(--red);padding:3px 8px;border-radius:99px;font-size:10px;font-weight:600;">✗ Online Only</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <div class="section-title" style="font-size:15px;margin-bottom:12px;">⬇ Download Modules for Offline Use</div>
+
+        <div class="download-card">
+          <div class="download-icon-wrap">📖</div>
+          <div class="download-info">
+            <div class="download-name">Module 05 — Sustainable Development Goals</div>
+            <div class="download-sub">10 Q&A answers • 42 flashcards • 30 quiz questions • ~2.4 MB</div>
+          </div>
+          <button class="btn btn-green" onclick="fakeDownload(this)">⬇ Download</button>
+        </div>
+
+        <div class="download-card">
+          <div class="download-icon-wrap">📖</div>
+          <div class="download-info">
+            <div class="download-name">Module 04 — Environmental Laws & Policies</div>
+            <div class="download-sub">8 Q&A answers • 35 flashcards • 25 quiz questions • ~1.9 MB</div>
+          </div>
+          <button class="btn" onclick="fakeDownload(this)">⬇ Download</button>
+        </div>
+
+        <div style="padding:14px;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);font-size:12px;color:var(--text2);margin-top:8px;">
+          💾 Data is stored in IndexedDB (browser storage). Offline access works in Chrome, Firefox, Edge, and Safari.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AI CHAT VIEW ===== -->
+    <div class="view" id="view-chat">
+      <div class="section-title">💬 AI Doubt Solver</div>
+      <div class="chat-layout">
+        <div class="chat-header">
+          <div class="ai-avatar">🤖</div>
+          <div>
+            <div style="font-size:13px;font-weight:700">VTU StudyAI</div>
+            <div style="font-size:11px;color:var(--green)">● Online — Powered by Claude</div>
+          </div>
+          <div style="margin-left:auto;font-size:11px;color:var(--text3)">Specialized in SDG Module 05</div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <div class="message">
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-bubble">
+              Hi! I'm your VTU SDG exam assistant. I can help you with:<br><br>
+              • Explaining SDG concepts<br>
+              • Answering doubts on Module 05<br>
+              • Generating model answers<br>
+              • Predicting exam questions<br><br>
+              What would you like to know? 😊
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" placeholder="Ask your doubt... (e.g. What are the principles of Good Governance?)" onkeydown="handleChatKey(event)"></textarea>
+          <button class="send-btn" onclick="sendChatMessage()">→</button>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+        <button class="btn" style="font-size:12px;padding:6px 12px;" onclick="quickChat('What are the 17 SDGs?')">What are the 17 SDGs?</button>
+        <button class="btn" style="font-size:12px;padding:6px 12px;" onclick="quickChat('Explain Good Governance principles')">Explain Good Governance</button>
+        <button class="btn" style="font-size:12px;padding:6px 12px;" onclick="quickChat('What questions will come in exam?')">Predict exam questions</button>
+        <button class="btn" style="font-size:12px;padding:6px 12px;" onclick="quickChat('Difference between MDGs and SDGs')">MDGs vs SDGs</button>
+      </div>
+    </div>
+
+    <!-- ===== GAMIFICATION VIEW ===== -->
+    <div class="view" id="view-gamification">
+      <div class="section-title">🏆 Achievements & Progress</div>
+
+      <div class="level-banner">
+        <div class="level-badge">🎓</div>
+        <div class="level-info">
+          <h2>Level 7 — SDG Scholar</h2>
+          <p>You're in the top 15% of VTU StudyAI users!</p>
+          <div class="level-xp">
+            <div style="font-size:12px;color:var(--text3);display:flex;justify-content:space-between;">
+              <span>1,360 / 2,000 XP</span>
+              <span>640 XP to Level 8</span>
+            </div>
+            <div class="level-xp-bar"><div class="level-xp-fill"></div></div>
+          </div>
+        </div>
+        <div style="text-align:center;flex-shrink:0;">
+          <div style="font-size:32px;font-weight:800;color:var(--gold);font-family:'Syne',sans-serif">🔥 12</div>
+          <div style="font-size:11px;color:var(--text3)">Day Streak</div>
+        </div>
+      </div>
+
+      <div style="font-size:14px;font-weight:700;font-family:'Syne',sans-serif;margin-bottom:12px;color:var(--text2);text-transform:uppercase;font-size:11px;letter-spacing:0.05em;">🏅 Achievements</div>
+      <div class="achievements-grid">
+        <div class="achievement unlocked">
+          <div class="achievement-icon">🎯</div>
+          <div class="achievement-name">First Quiz!</div>
+        </div>
+        <div class="achievement unlocked">
+          <div class="achievement-icon">🔥</div>
+          <div class="achievement-name">7-Day Streak</div>
+        </div>
+        <div class="achievement unlocked">
+          <div class="achievement-icon">📚</div>
+          <div class="achievement-name">Note Saver</div>
+        </div>
+        <div class="achievement unlocked">
+          <div class="achievement-icon">⚡</div>
+          <div class="achievement-name">Speed Learner</div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">🏆</div>
+          <div class="achievement-name">Perfect Score</div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">📵</div>
+          <div class="achievement-name">Offline Hero</div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">🌟</div>
+          <div class="achievement-name">Module Master</div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">💎</div>
+          <div class="achievement-name">30-Day Streak</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card">
+          <div class="card-title">📈 This Week</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--text2);">
+            <div style="display:flex;justify-content:space-between;">
+              <span>Quizzes Completed</span><strong style="color:var(--text)">14</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span>Flashcards Reviewed</span><strong style="color:var(--text)">86</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span>Answers Generated</span><strong style="color:var(--text)">23</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span>XP Earned</span><strong style="color:var(--gold)">+420 XP</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <span>Study Time</span><strong style="color:var(--accent)">4h 38m</strong>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🎯 Topic Mastery</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>17 SDGs</span><span style="color:var(--green)">90%</span></div>
+              <div class="progress-mini"><div class="progress-fill" style="width:90%;background:var(--green)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Good Governance</span><span style="color:var(--accent)">75%</span></div>
+              <div class="progress-mini"><div class="progress-fill" style="width:75%"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Financing SDGs</span><span style="color:var(--gold)">60%</span></div>
+              <div class="progress-mini"><div class="progress-fill" style="width:60%;background:var(--gold)"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Feasibility</span><span style="color:var(--red)">40%</span></div>
+              <div class="progress-mini"><div class="progress-fill" style="width:40%;background:var(--red)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const SDG_ANSWERS = {
+  sdg17: {
+    2: `DEFINITION (2 Marks)
+
+The Sustainable Development Goals (SDGs) are a universal set of 17 goals adopted by all UN member countries in September 2015 under the 2030 Agenda for Sustainable Development. They aim to eradicate poverty, protect the planet, and ensure peace and prosperity by 2030, replacing the earlier Millennium Development Goals (MDGs). They are based on the principle "Leave No One Behind."`,
+
+    5: `SUSTAINABLE DEVELOPMENT GOALS — SDGs (5 Marks)
+
+Introduction:
+The SDGs are 17 global goals adopted by 193 UN member nations in September 2015 as part of the 2030 Agenda. They came into effect on 1 January 2016 and are to be achieved by 2030.
+
+Concept:
+Sustainable development means meeting the needs of the present without compromising future generations. SDGs provide a framework across three dimensions:
+1. Economic Sustainability – growth, employment, innovation
+2. Social Sustainability – education, health, equality
+3. Environmental Sustainability – climate, forests, oceans
+
+The 17 SDGs:
+1. No Poverty  2. Zero Hunger  3. Good Health  4. Quality Education
+5. Gender Equality  6. Clean Water  7. Clean Energy  8. Decent Work
+9. Industry & Innovation  10. Reduced Inequalities  11. Sustainable Cities
+12. Responsible Consumption  13. Climate Action  14. Life Below Water
+15. Life on Land  16. Peace & Justice  17. Partnerships
+
+Significance: SDGs promote balanced economic, social, and environmental development while ensuring no one is left behind.`,
+
+    10: `SUSTAINABLE DEVELOPMENT GOALS (SDGs) — DETAILED (10 Marks)
+
+Introduction:
+The Sustainable Development Goals (SDGs) are a universal set of goals adopted by all 193 UN member countries in September 2015 as part of the 2030 Agenda for Sustainable Development. They came into effect on 1 January 2016, replacing the earlier Millennium Development Goals (MDGs). They are based on the principle "Leave No One Behind."
+
+Concept of SDGs:
+Sustainable development means meeting the needs of the present generation without compromising the ability of future generations. SDGs work across three dimensions:
+• Economic Sustainability – growth, employment, innovation
+• Social Sustainability – education, health, equality, justice
+• Environmental Sustainability – climate, forests, oceans, resources
+
+Objectives of SDGs:
+1. Eradicate poverty in all forms everywhere
+2. End hunger and ensure food security
+3. Provide quality healthcare and well-being
+4. Ensure inclusive and equitable education
+5. Achieve gender equality and empower women
+6. Provide clean water and sanitation
+7. Promote affordable and clean energy
+8. Generate decent employment and economic growth
+9. Build resilient infrastructure and promote innovation
+10. Reduce inequalities within and among countries
+11. Develop sustainable cities and communities
+12. Encourage responsible production and consumption
+13. Take urgent action on climate change
+14. Protect oceans and marine resources
+15. Protect forests, biodiversity, and land ecosystems
+16. Promote peace, justice, and strong institutions
+17. Strengthen global partnerships
+
+The 17 Sustainable Development Goals:
+Goal 1: No Poverty — eliminate extreme poverty for all people
+Goal 2: Zero Hunger — achieve food security, end malnutrition
+Goal 3: Good Health — ensure healthy lives and well-being for all
+Goal 4: Quality Education — inclusive, equitable, lifelong learning
+Goal 5: Gender Equality — empower women and girls worldwide
+Goal 6: Clean Water & Sanitation — safe water for all
+Goal 7: Affordable & Clean Energy — access to sustainable energy
+Goal 8: Decent Work — full employment, economic growth
+Goal 9: Industry & Innovation — resilient infrastructure, industrialization
+Goal 10: Reduced Inequalities — income, social, geographic
+Goal 11: Sustainable Cities — safe, resilient, inclusive cities
+Goal 12: Responsible Consumption — sustainable production patterns
+Goal 13: Climate Action — urgent measures against climate change
+Goal 14: Life Below Water — conserve oceans and marine resources
+Goal 15: Life on Land — forests, desertification, biodiversity
+Goal 16: Peace & Justice — strong, accountable institutions
+Goal 17: Partnerships — global cooperation for implementation
+
+Significance of SDGs in Global Development:
+1. Poverty Reduction — eliminates extreme poverty through education, employment, social protection
+2. Better Health & Education — universal healthcare, quality education, child welfare
+3. Gender Equality — equal rights, opportunities for women and marginalized communities
+4. Economic Growth — encourages innovation, entrepreneurship, job creation
+5. Environmental Protection — renewable energy, pollution control, climate action
+6. Sustainable Cities — urban planning, affordable housing, waste management
+7. Peace & Good Governance — transparency, justice, accountable institutions
+8. Global Cooperation — countries, NGOs, industries working together
+9. Balanced Development — integrates economic, social, environmental priorities
+10. Future Generations — resources preserved for long-term prosperity
+
+Conclusion:
+The SDGs represent humanity's shared blueprint for a better future. Their interconnected nature ensures that progress in one goal supports others, making them a powerful framework for balanced global development by 2030.`
+  },
+  governance: {
+    10: `GOOD GOVERNANCE AND SUSTAINABLE DEVELOPMENT (10 Marks)
+
+Introduction:
+Good Governance is the process of managing public resources and institutions in a responsible, transparent, accountable, and efficient manner for societal welfare. It is essential for achieving all 17 SDGs effectively.
+
+Definition:
+According to the United Nations, good governance involves participation, accountability, transparency, responsiveness, effectiveness, equity, and rule of law.
+
+Principles of Good Governance:
+1. Participation — Citizens participate in decision-making directly or through representatives. Example: Public consultation in city planning.
+2. Transparency — Policies and decisions are open and accessible. Example: Online publication of budgets and tenders.
+3. Accountability — Officials are answerable for their actions. Example: Audits of public expenditure.
+4. Rule of Law — Laws applied equally to all citizens. Example: Equal punishment for corruption.
+5. Responsiveness — Quick response to public needs. Example: Disaster relief during floods.
+6. Equity & Inclusiveness — Equal opportunities for all. Example: Scholarships for weaker sections.
+7. Effectiveness & Efficiency — Resources used without waste. Example: Timely completion of projects.
+8. Consensus Oriented — Decisions benefit society as a whole. Example: Stakeholder discussions before industrial projects.
+9. Strategic Vision — Long-term sustainable planning. Example: Smart cities mission.
+
+Why Good Governance is Essential for Sustainable Development:
+1. Efficient Resource Use — Prevents wastage, ensures wise use of natural and financial resources.
+2. Reduces Corruption — Transparent systems (e-tendering) reduce misuse of public funds.
+3. Social Justice — Equal access to education, healthcare, employment.
+4. Environmental Protection — Strict laws control pollution and deforestation.
+5. Public Participation — Citizens become partners in development programs.
+6. Economic Growth — Stable policies attract investment, create employment.
+7. Better Public Services — Digital governance portals provide faster services.
+8. Peace & Stability — Fair governance reduces conflicts and inequality.
+
+Examples:
+• Swachh Bharat Mission — Policy + citizen participation improved sanitation nationwide.
+• Rainwater Harvesting Regulations — Mandatory conservation in cities.
+• Digital India — Online services increased transparency, reduced delays.
+• Public Distribution System Reforms — Digital ration cards reduced food leakage.
+• Solar Subsidies — Government incentives increased clean energy adoption.
+
+Conclusion:
+Good governance is the foundation of sustainable development. Without it, even the best plans and adequate finances cannot achieve lasting results. Transparency, accountability, and participation are the three pillars that transform policy into progress for present and future generations.`
+  }
+};
+
+let currentMarkType = 2;
+let currentQuestion = 0;
+let quizScore = 0;
+let quizAnswered = 0;
+let fcIndex = 0;
+let fcFlipped = false;
+let chatHistory = [];
+let timerInterval;
+let seconds = 31335;
+
+const quizData = [
+  { q: "The Sustainable Development Goals were adopted in which year?", opts: ["2000","2012","2015","2020"], ans: 2, marks: "2M", topic: "SDG Basics", exp: "SDGs were adopted in September 2015 at the UN Summit, replacing the Millennium Development Goals (MDGs)." },
+  { q: "How many Sustainable Development Goals are there?", opts: ["10","15","17","21"], ans: 2, marks: "2M", topic: "SDG Basics", exp: "There are 17 SDGs with 169 targets, adopted under the 2030 Agenda for Sustainable Development." },
+  { q: "What is the core principle on which SDGs are based?", opts: ["Growth First","Profit Over People","Leave No One Behind","Technology Driven"], ans: 2, marks: "5M", topic: "SDG Principles", exp: 'SDGs are based on "Leave No One Behind" — ensuring development benefits all people without discrimination.' },
+  { q: "Which of the following is NOT one of the 17 SDGs?", opts: ["No Poverty","Zero Hunger","Maximum Industrialization","Climate Action"], ans: 2, marks: "5M", topic: "17 SDGs", exp: "There is no SDG called 'Maximum Industrialization'. SDG 9 is Industry, Innovation & Infrastructure — focused on resilient and sustainable growth." },
+  { q: "Good Governance principle of 'Transparency' means:", opts: ["Keeping government decisions secret","Making policies open and accessible to public","Reducing taxes","Increasing military budget"], ans: 1, marks: "5M", topic: "Good Governance", exp: "Transparency means government policies, decisions, and actions should be open and easily accessible to the public — e.g., online budgets and tenders." },
+  { q: "SDG 13 focuses on:", opts: ["No Poverty","Gender Equality","Climate Action","Clean Water"], ans: 2, marks: "2M", topic: "17 SDGs", exp: "SDG 13 is Climate Action — urgent measures to combat climate change and its impacts." },
+  { q: "Which of these is a source of financing for SDGs?", opts: ["Green Bonds","War Bonds","Deficit Spending","None of the above"], ans: 0, marks: "10M", topic: "Financing SDGs", exp: "Green Bonds are special financial instruments used for environmental and climate-related projects — a key source of SDG financing." },
+  { q: "The 2030 Agenda was adopted by:", opts: ["G20 Nations","IMF & World Bank","All UN Member Countries","Only Developing Nations"], ans: 2, marks: "10M", topic: "2030 Agenda", exp: "The 2030 Agenda was adopted by all 193 UN member countries in September 2015, making it truly universal." }
+];
+
+const flashcards = [
+  { q: "What does SDG stand for?", a: "Sustainable Development Goals — 17 global goals adopted by the UN in 2015 to achieve balanced economic, social, and environmental development by 2030." },
+  { q: "When did SDGs come into effect?", a: "1 January 2016. They were adopted in September 2015 and became operational from 1st January 2016." },
+  { q: "What replaced the MDGs?", a: "The Sustainable Development Goals (SDGs). MDGs ran from 2000-2015; SDGs cover 2016-2030 with a broader scope including environmental goals." },
+  { q: "What is the core principle of SDGs?", a: '"Leave No One Behind" — development should benefit all people without discrimination, especially the poor and marginalized.' },
+  { q: "How many SDG targets are there?", a: "169 targets across 17 goals, with 232 unique indicators to measure progress." },
+  { q: "Name 3 dimensions of Sustainable Development", a: "1. Economic Sustainability (growth, employment)\n2. Social Sustainability (education, health, equality)\n3. Environmental Sustainability (climate, forests, oceans)" },
+  { q: "What is Good Governance?", a: "Efficient, transparent, accountable, and participatory management of public affairs for societal welfare. UN definition includes participation, accountability, transparency, rule of law, equity, and effectiveness." },
+  { q: "What is Economic Feasibility?", a: "Assessment of whether a project is financially affordable and economically beneficial — considering initial cost, ROI, job creation, and long-term savings." },
+  { q: "What are Green Bonds?", a: "Special financial instruments used specifically for environmental and climate-related projects such as clean energy, afforestation, and pollution control." },
+  { q: "What is Goal-Based Development?", a: "A systematic approach to development where progress is planned according to clearly defined goals, targets, and timelines — ensuring measurable outcomes." },
+  { q: "Which SDG focuses on climate?", a: "SDG 13 — Climate Action: urgent measures to combat climate change and its impacts including natural disasters, sea level rise, and extreme weather." },
+  { q: "What is PPP in SDG context?", a: "Public-Private Partnership — joint cooperation between government and private companies to finance and operate development projects like highways, airports, and smart cities." }
+];
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  if (id === 'quiz') initQuiz();
+  if (id === 'flashcards') loadFlashcard();
+  if (id === 'lastday') startTimer();
+}
+
+function setMarkType(m) {
+  currentMarkType = m;
+  document.querySelectorAll('.mark-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + m).classList.add('active');
+}
+
+function fakeUpload() {
+  document.getElementById('upload-status').textContent = '✅ SDGs_Module-05_Notes.docx loaded! Ready to generate.';
+  showToast('📄 Document loaded successfully!', 'success');
+}
+
+async function generateAnswer() {
+  const topic = document.getElementById('topic-select').value;
+  const out = document.getElementById('answer-output');
+
+  let answerText = '';
+
+  if (!topic) {
+    out.innerHTML = '<div class="placeholder">Please select a topic first!</div>';
+    return;
+  }
+
+  const saved = SDG_ANSWERS[topic] && SDG_ANSWERS[topic][currentMarkType];
+  if (saved) {
+    answerText = saved;
+  } else {
+    answerText = generateFallbackAnswer(topic, currentMarkType);
+  }
+
+  out.innerHTML = '';
+  document.getElementById('word-count').textContent = '...';
+  document.getElementById('read-time').textContent = '...';
+  document.getElementById('marks-label').textContent = currentMarkType;
+
+  let i = 0;
+  const speed = answerText.length > 500 ? 8 : 15;
+
+  const typeInterval = setInterval(() => {
+    if (i < answerText.length) {
+      out.textContent += answerText[i];
+      i += 3;
+      out.scrollTop = out.scrollHeight;
+    } else {
+      out.textContent = answerText;
+      clearInterval(typeInterval);
+      const words = answerText.split(' ').length;
+      document.getElementById('word-count').textContent = words;
+      document.getElementById('read-time').textContent = Math.ceil(words / 200);
+      showToast('⚡ +15 XP earned!', 'xp');
+    }
+  }, speed);
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: `You are a VTU exam preparation expert. Generate a ${currentMarkType}-mark VTU-style answer for the following topic from Module 05 on Sustainable Development Goals:\n\nTopic: ${document.getElementById('topic-select').options[document.getElementById('topic-select').selectedIndex].text}\n\nFormat: Use proper VTU answer format with Introduction, numbered points, examples, and Conclusion. Be concise but complete for ${currentMarkType} marks.`
+        }]
+      })
+    });
+    if (response.ok) {
+      const data = await response.json();
+      const aiText = data.content[0].text;
+      clearInterval(typeInterval);
+      out.textContent = '';
+      let j = 0;
+      const aiInterval = setInterval(() => {
+        if (j < aiText.length) { out.textContent += aiText[j]; j += 2; out.scrollTop = out.scrollHeight; }
+        else {
+          out.textContent = aiText;
+          clearInterval(aiInterval);
+          const w = aiText.split(' ').length;
+          document.getElementById('word-count').textContent = w;
+          document.getElementById('read-time').textContent = Math.ceil(w / 200);
+        }
+      }, 10);
+    }
+  } catch(e) {}
+}
+
+function generateFallbackAnswer(topic, marks) {
+  const topicNames = {
+    'goal-based': 'Goal-Based Development',
+    'financing': 'Financing for Sustainable Development',
+    'feasibility': 'Feasibility of Sustainable Development',
+    'roles': 'Role of Governments, Private Sector & International Organizations',
+    'justify-gov': 'Good Governance is Essential for Sustainable Development',
+    'challenges': 'Challenges in Achieving SDGs in Developing Countries',
+    'financing-gov': 'Relationship between Financing, Governance & Feasibility',
+    '2030agenda': '2030 Agenda for Sustainable Development'
+  };
+  const name = topicNames[topic] || topic;
+  return `${name.toUpperCase()} (${marks} Marks)\n\nIntroduction:\nThis topic covers ${name} in the context of Sustainable Development Goals (SDGs) and the 2030 Agenda adopted by the United Nations.\n\nKey Points:\n1. Definition and concept as per VTU syllabus\n2. Important features and characteristics\n3. Role and significance in sustainable development\n4. Suitable examples from India and global context\n\nExample:\nIndia's initiatives like Swachh Bharat Mission, Digital India, and National Solar Mission demonstrate practical application of these concepts.\n\n[Connect to internet for AI-powered detailed answer generation]\n\nConclusion:\nUnderstanding ${name} is crucial for achieving the 2030 Agenda and ensuring balanced development for present and future generations.`;
+}
+
+function copyAnswer() {
+  const text = document.getElementById('answer-output').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 Copied to clipboard!', 'success'));
+}
+
+function saveAnswer() {
+  showToast('💾 Saved for offline use!', 'success');
+}
+
+function initQuiz() {
+  currentQuestion = 0; quizScore = 0; quizAnswered = 0;
+  buildDots();
+  loadQuestion();
+}
+
+function buildDots() {
+  const d = document.getElementById('quiz-dots');
+  d.innerHTML = quizData.map((_, i) => `<div class="quiz-dot${i===0?' current':''}"></div>`).join('');
+}
+
+function loadQuestion() {
+  const q = quizData[currentQuestion];
+  document.getElementById('q-num').textContent = currentQuestion + 1;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-badge').textContent = q.marks;
+  document.getElementById('q-badge').className = 'q-badge ' + (q.marks.includes('10') ? 'm10' : q.marks.includes('5') ? 'm5' : 'm2');
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('explanation-box').style.display = 'none';
+  document.getElementById('next-btn').disabled = true;
+
+  const letters = ['A','B','C','D'];
+  document.getElementById('options-container').innerHTML = q.opts.map((o, i) =>
+    `<div class="option" onclick="selectOption(${i})" id="opt-${i}">
+      <div class="option-letter">${letters[i]}</div>${o}
+    </div>`
+  ).join('');
+}
+
+function selectOption(idx) {
+  const q = quizData[currentQuestion];
+  document.querySelectorAll('.option').forEach(o => { o.onclick = null; });
+  document.getElementById('opt-' + idx).classList.add(idx === q.ans ? 'correct' : 'wrong');
+  if (idx !== q.ans) document.getElementById('opt-' + q.ans).classList.add('correct');
+
+  if (idx === q.ans) { quizScore++; showToast('✅ Correct! +10 XP', 'xp'); }
+  else showToast('❌ Incorrect!', '');
+
+  quizAnswered++;
+  document.getElementById('score-display').textContent = `${quizScore}/${quizAnswered}`;
+  document.getElementById('accuracy-display').textContent = Math.round((quizScore/quizAnswered)*100) + '%';
+
+  const eb = document.getElementById('explanation-box');
+  eb.style.display = 'block';
+  eb.innerHTML = `<strong>💡 Explanation:</strong> ${q.exp}`;
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  const dots = document.querySelectorAll('.quiz-dot');
+  dots[currentQuestion].classList.remove('current');
+  dots[currentQuestion].classList.add('done');
+  currentQuestion++;
+  if (currentQuestion >= quizData.length) {
+    document.getElementById('q-card').innerHTML = `<div style="text-align:center;padding:40px;"><div style="font-size:48px;margin-bottom:12px">🎉</div><div style="font-size:24px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:8px">Quiz Complete!</div><div style="font-size:16px;color:var(--text2)">Score: ${quizScore}/${quizData.length} (${Math.round(quizScore/quizData.length*100)}%)</div><div style="margin-top:20px;color:var(--gold);font-size:14px">+${quizScore*10} XP Earned! 🔥</div><button class="btn btn-primary" style="margin-top:16px;padding:12px 24px;" onclick="initQuiz()">Play Again</button></div>`;
+    document.getElementById('explanation-box').style.display = 'none';
+    return;
+  }
+  if (currentQuestion < dots.length) dots[currentQuestion].classList.add('current');
+  loadQuestion();
+}
+
+function skipQuestion() { nextQuestion(); }
+
+function loadFlashcard() {
+  const fc = flashcards[fcIndex];
+  document.getElementById('fc-question').textContent = fc.q;
+  document.getElementById('fc-answer').textContent = fc.a;
+  document.getElementById('fc-num').textContent = fcIndex + 1;
+  document.getElementById('fc-total').textContent = flashcards.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  fcFlipped = false;
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', fcFlipped);
+}
+
+function rateCard(rating) {
+  const counts = { hard: 'fc-hard', ok: 'fc-ok', easy: 'fc-easy' };
+  const el = document.getElementById(counts[rating]);
+  el.textContent = parseInt(el.textContent) + 1;
+  showToast(rating === 'easy' ? '😊 +5 XP!' : rating === 'ok' ? '😐 +3 XP' : '😓 Will review again', rating === 'easy' ? 'xp' : '');
+  fcIndex = (fcIndex + 1) % flashcards.length;
+  setTimeout(loadFlashcard, 200);
+}
+
+function shuffleCards() {
+  fcIndex = Math.floor(Math.random() * flashcards.length);
+  loadFlashcard();
+  showToast('🔀 Cards shuffled!', 'success');
+}
+
+let trainerWords = 0;
+document.addEventListener('DOMContentLoaded', () => {
+  const ti = document.getElementById('trainer-input');
+  if (ti) ti.addEventListener('input', () => {
+    const w = ti.value.trim() ? ti.value.trim().split(/\s+/).length : 0;
+    document.getElementById('word-counter').textContent = w + ' words';
+  });
+});
+
+function clearTrainer() {
+  document.getElementById('trainer-input').value = '';
+  document.getElementById('word-counter').textContent = '0 words';
+  document.getElementById('eval-result').style.display = 'none';
+  document.getElementById('eval-placeholder').style.display = 'block';
+}
+
+async function evaluateAnswer() {
+  const answer = document.getElementById('trainer-input').value.trim();
+  if (!answer) { showToast('Please write an answer first!', ''); return; }
+
+  document.getElementById('eval-placeholder').style.display = 'none';
+  document.getElementById('eval-result').style.display = 'block';
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+          role: "user",
+          content: `You are a VTU examiner. Evaluate this 10-mark answer on "Good Governance is Essential for Sustainable Development" and respond ONLY with JSON: {"score":"X/10","intro":score_out_of_10,"keypoints":score_out_of_10,"examples":score_out_of_10,"conclusion":score_out_of_10,"feedback":"2 sentence feedback"}\n\nStudent answer:\n${answer}`
+        }]
+      })
+    });
+    if (response.ok) {
+      const data = await response.json();
+      try {
+        const ev = JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
+        document.getElementById('score-circle').textContent = ev.score;
+        document.querySelector('.score-breakdown').innerHTML = [
+          ['Introduction', ev.intro],
+          ['Key Points', ev.keypoints],
+          ['Examples', ev.examples],
+          ['Conclusion', ev.conclusion]
+        ].map(([label, s]) => `<div class="score-item"><span style="min-width:100px">${label}</span><div class="score-bar"><div class="score-bar-fill" style="width:${s*10}%"></div></div><span style="min-width:30px;text-align:right">${s}/10</span></div>`).join('');
+        document.querySelector('.score-breakdown').nextElementSibling.nextElementSibling.innerHTML = `<strong style="color:var(--text)">💡 AI Feedback:</strong><br>${ev.feedback}`;
+      } catch(e) {}
+    }
+  } catch(e) {}
+  showToast('📊 Evaluation complete! +20 XP', 'xp');
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (seconds > 0) {
+      seconds--;
+      const h = Math.floor(seconds/3600);
+      const m = Math.floor((seconds%3600)/60);
+      const s = seconds % 60;
+      const el = document.getElementById('countdown-timer');
+      if (el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+  }, 1000);
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addChatMessage(msg, true);
+
+  const thinking = addChatMessage('Thinking...', false);
+
+  try {
+    chatHistory.push({ role: "user", content: msg });
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: "You are an expert VTU exam assistant specializing in Module 05: Sustainable Development Goals. Answer concisely and helpfully. Use bullet points. Always relate answers to VTU exam format.",
+        messages: chatHistory
+      })
+    });
+    thinking.remove();
+    if (response.ok) {
+      const data = await response.json();
+      const reply = data.content[0].text;
+      chatHistory.push({ role: "assistant", content: reply });
+      addChatMessage(reply, false);
+    } else {
+      addChatMessage('I am currently offline. Please check your connection. Your saved notes are still available!', false);
+    }
+  } catch(e) {
+    thinking.remove();
+    addChatMessage('Offline mode — AI unavailable. Access your saved notes for revision!', false);
+  }
+}
+
+function addChatMessage(text, isUser) {
+  const container = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'message' + (isUser ? ' user' : '');
+  div.innerHTML = `<div class="msg-avatar">${isUser ? '👤' : '🤖'}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+}
+
+function quickChat(msg) {
+  document.getElementById('chat-input').value = msg;
+  sendChatMessage();
+}
+
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3100);
+}
+
+function showDownloadToast() {
+  showToast('⬇ Module 05 downloading for offline...', 'success');
+  setTimeout(() => showToast('✅ Saved! Works offline now.', 'success'), 1500);
+}
+
+function quickLoad(topic) {
+  showView('generator');
+  showToast('📄 ' + topic + ' loaded!', 'success');
+}
+
+function loadSavedAnswer() {
+  showView('generator');
+  document.getElementById('topic-select').value = 'sdg17';
+  setMarkType(10);
+  setTimeout(generateAnswer, 300);
+}
+
+function fakeDownload(btn) {
+  btn.textContent = '⬇ Downloading...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '✅ Downloaded';
+    btn.className = 'btn btn-green';
+    showToast('✅ Module saved for offline use!', 'success');
+  }, 1500);
+}
+
+initQuiz();
+loadFlashcard();
+startTimer();
+</script>
+</body>
+</html>
